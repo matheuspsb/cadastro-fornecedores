@@ -1,0 +1,124 @@
+﻿@page
+@model cadastro.Pages.Fornecedores.CreateModel
+@{
+}
+
+<br />
+<h2>Novo Fornecedor</h2>
+
+@if (Model.errorMessage.Length > 0)
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>@Model.errorMessage</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+    </div>
+}
+
+<form method="POST">
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Nome</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" name="nome" maxlength="100" value="@Model.listFornecedor.nome" />
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">CNPJ</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" name="cnpj" pattern="\d*" maxlength="14" value="@Model.listFornecedor.cnpj" />
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Especialidade</label>
+        <div class="col-sm-6">
+            <select class="form-select" name="especialidade">
+                <option value="">Selecione uma opção</option>
+                <option value="Comércio" selected="@(Model.listFornecedor.especialidade == "Comércio")">Comércio</option>
+                <option value="Serviço" selected="@(Model.listFornecedor.especialidade == "Serviço")">Serviço</option>
+                <option value="Indústria" selected="@(Model.listFornecedor.especialidade == "Industria")">Indústria</option>
+            </select>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">CEP</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" name="cep" pattern="\d*" maxlength="8" value="@Model.listFornecedor.cep" />
+        </div>
+    </div>
+    <div class="row mb-3">
+        <label class="col-sm-3 col-form-label">Endereço</label>
+        <div class="col-sm-6">
+            <input type="text" class="form-control" name="endereço" value="@Model.listFornecedor.endereco" />
+        </div>
+    </div>
+
+    @if (Model.successMessage.Length > 0)
+    {
+        <div class="row mb-3">
+            <div class="col-sm-9">
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>@Model.successMessage</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="row mb-3">
+        <div class="offset-sm-3 col-sm-3 d-grid">
+            <button type="submit" class="btn btn-primary">Enviar</button>
+        </div>
+        <div class="col-sm-3 d-grid">
+            <a class="btn btn-outline-primary" href="/" role="button">Cancelar</a>
+        </div>
+    </div>
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const cepInput = document.querySelector('input[name="cep"]');
+
+        cepInput.addEventListener('input', function (event) {
+            const inputValue = event.target.value;
+            const numericValue = inputValue.replace(/\D/g, '');
+
+            event.target.value = numericValue;
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const cnpjInput = document.querySelector('input[name="cnpj"]');
+
+        cnpjInput.addEventListener('input', function (event) {
+            const inputValue = event.target.value;
+            const numericValue = inputValue.replace(/\D/g, '');
+
+            event.target.value = numericValue;
+        });
+    });
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const cepInput = document.querySelector('input[name="cep"]');
+        const enderecoInput = document.querySelector('input[name="endereço"]');
+
+        cepInput.addEventListener('input', function (event) {
+            const inputValue = event.target.value;
+            const numericValue = inputValue.replace(/\D/g, '');
+
+            event.target.value = numericValue;
+
+            if (numericValue.length === 8) {
+                $.getJSON(`https://viacep.com.br/ws/${numericValue}/json/`, function (data) {
+                    if (!data.erro) {
+                        enderecoInput.value = `${data.logradouro}, ${data.bairro}, ${data.localidade}, ${data.uf}`;
+                    }
+                });
+            }
+        });
+    });
+</script>
+
